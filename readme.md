@@ -1,5 +1,5 @@
-## FuzzUnit
-FuzzUnit is a [JUnit 5 argument source](https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-sources)
+## FuzzDbUnit
+FuzzDbUnit is a [JUnit 5 argument source](https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-sources)
 intended to be used in parameterized tests. Its purpose is to execute fuzz testing during unit or
 integration testing.
 
@@ -8,7 +8,7 @@ integration testing.
 the development of test-driven development, and is one of a family of unit testing frameworks which
 is collectively known as xUnit that originated with SUnit." *Source: Wikipedia*
 
-FuzzUnit, as a argument source of JUnit, brings fuzz testing to the unit and integration phase.
+FuzzDbUnit, as an argument source of JUnit, brings fuzz testing to the unit and integration phase.
 
 ### What is fuzzing?
 According to Wikipedia: "Fuzzing or fuzz testing is an automated software testing technique that
@@ -25,8 +25,8 @@ reasons:
 * DAST tools take time to put in place
 * Fuzz testing with DAST tools is not efficient
 
-FuzzUnit brings the power of fuzzing early in the development process, during the unit or integration
-tests. It requires no more than JUnit, which is already in place in most software projects.
+FuzzDbUnit brings the power of fuzzing early in the development process, during the unit or integration
+tests. It requires no more than JUnit, which is already in place in most software projects, and which is mastered by developers. As such, it allows developers to take the responsability of the security of their software product. Therefore, it fits perfectly to DevSecOps.
 
 ### FuzzDB: the source of fuzzing data
 The fuzzing data used in FuzzUnit come from [FuzzDB](https://github.com/fuzzdb-project/fuzzdb), "the
@@ -34,7 +34,7 @@ first and most comprehensive open dictionary of fault injection patterns, predic
 locations, and regex for matching server responses. FuzzDB was created to increase the likelihood of
 finding application security vulnerabilities through dynamic application security testing." 
 
-FuzzUnit allows developers to carry on fuzz testing during the unit or integration phase, when bugs
+FuzzDbUnit allows developers to carry on fuzz testing during the unit or integration phase, when bugs
 are easier to fix.
 
 
@@ -44,5 +44,6 @@ are easier to fix.
 * [Release notes](./docs/release-notes.md)
 * [License](./LICENSE.md)
 
+### External links
 * [JUnit 5](https://junit.org/junit5/)
 * [FuzzDB](https://github.com/fuzzdb-project/fuzzdb)
