@@ -79,6 +79,7 @@ val generateFuzzEnum by tasks.registering {
 
 tasks.compileJava {
     dependsOn(tasks.licenseFormat)
+    dependsOn(generateFuzzEnum)
 }
 
 class FuzzDbEnumGenerator {
@@ -130,7 +131,7 @@ class FuzzDbEnumGenerator {
 
     fun buildEnumName(f: File): Pair<String, String> {
         val relativePath = f.canonicalPath
-                .substringAfter("resources\\")
+                .substringAfter("resources" + File.separatorChar)
                 .replace("\\", "/")
         val enumName = relativePath
                 .substringAfter("attack.")

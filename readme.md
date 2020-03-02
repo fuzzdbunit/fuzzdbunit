@@ -18,7 +18,7 @@ memory leaks. Typically, fuzzers are used to test programs that take structured 
 
 Fuzzing is also used by bad guys for finding weaknesses in software code. Therefore, every piece of
 software should be fuzzed in order to find bugs before bad guys do. Usually, fuzzing is executed
-by security researchers during application security testing (DAST), that is when the application
+by penetration testers during application security testing (DAST), that is when the application
 is tested in a preprod environment. However, this is inefficient and time consuming, for several
 reasons:
 * bugs are found late in the SDLC
@@ -26,7 +26,9 @@ reasons:
 * Fuzz testing with DAST tools is not efficient
 
 FuzzDbUnit brings the power of fuzzing early in the development process, during the unit or integration
-tests. It requires no more than JUnit, which is already in place in most software projects, and which is mastered by developers. As such, it allows developers to take the responsability of the security of their software product. Therefore, it fits perfectly to DevSecOps.
+tests. It requires no more than JUnit, which is already in place in most software projects, and which is mastered by
+developers. As such, it allows developers to take the responsability of the security of their software product. Also,
+it fits perfectly to DevSecOps.
 
 ### FuzzDB: the source of fuzzing data
 The fuzzing data used in FuzzUnit come from [FuzzDB](https://github.com/fuzzdb-project/fuzzdb), "the
@@ -35,7 +37,7 @@ locations, and regex for matching server responses. FuzzDB was created to increa
 finding application security vulnerabilities through dynamic application security testing." 
 
 FuzzDbUnit allows developers to carry on fuzz testing during the unit or integration phase, when bugs
-are easier to fix.
+are easier to fix. Because
 
 
 ### Links

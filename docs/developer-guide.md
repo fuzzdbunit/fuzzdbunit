@@ -1,5 +1,8 @@
 ## Developer Guide
 
+### Requirements
+* JDK 11
+
 ### Building
 Building the jar:
 ```
