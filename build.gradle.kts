@@ -58,7 +58,7 @@ val cloneOrUpdateFuzzDb by tasks.registering {
 }
 
 val copyFuzzDbFiles by tasks.registering {
-    dependsOn(cloneOrUpdateFuzzDb)
+    //dependsOn(cloneOrUpdateFuzzDb)
 
     doLast {
         copy {
@@ -79,7 +79,7 @@ val generateFuzzEnum by tasks.registering {
 
 tasks.compileJava {
     dependsOn(tasks.licenseFormat)
-    dependsOn(generateFuzzEnum)
+    dependsOn(cloneOrUpdateFuzzDb)
 }
 
 class FuzzDbEnumGenerator {
@@ -107,10 +107,10 @@ class FuzzDbEnumGenerator {
                 writer.write(it)
                 writer.newLine()
             } else if (state.mustAppendEnums()) {
-                val it = enumNames.iterator()
-                for ((enumName, filename) in it) {
+                val nameIt = enumNames.iterator()
+                for ((enumName, filename) in nameIt) {
                     writer.write("  $enumName(\"$filename\")")
-                    if (it.hasNext()) {
+                    if (nameIt.hasNext()) {
                         writer.append(",")
                     } else {
                         writer.append(";")
@@ -125,7 +125,7 @@ class FuzzDbEnumGenerator {
     }
 
     private fun buildEnum(enumName: String, filename: String): String {
-        var fuzzEnum = "  $enumName(\"$filename\")"
+        val fuzzEnum = "  $enumName(\"$filename\")"
         return fuzzEnum
     }
 

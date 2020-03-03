@@ -14,9 +14,9 @@ cache:
 build:
   stage: build
   script:
-    - sudo chown gradle:gradle src
-    - ./gradlew cloneOrUpdateFuzzDb
-    - pwd
+    - ./gradlew compileJava
+    - ls -al
+    - echo "------------------"
     - ls -al build
     - echo "------------------"
     - ls -al src
