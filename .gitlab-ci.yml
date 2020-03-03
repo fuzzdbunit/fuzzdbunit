@@ -1,7 +1,7 @@
 image: gradle:alpine
 
 variables:
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  GRADLE_OPTS: ""
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -16,4 +16,6 @@ build:
   script:
     - ./gradlew cloneOrUpdateFuzzDb
     - pwd
-    - ls -al
+      - ls -al build
+      - echo "------------------"
+      - ls -al src
