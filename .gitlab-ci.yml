@@ -16,6 +16,6 @@ build:
   script:
     - ./gradlew cloneOrUpdateFuzzDb
     - pwd
-      - ls -al build
-      - echo "------------------"
-      - ls -al src
+    - ls -al build
+    - echo "------------------"
+    - ls -al src
