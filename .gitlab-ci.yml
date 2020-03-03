@@ -14,6 +14,7 @@ cache:
 build:
   stage: build
   script:
+    - chown gradle:gradle src
     - ./gradlew cloneOrUpdateFuzzDb
     - pwd
     - ls -al build
