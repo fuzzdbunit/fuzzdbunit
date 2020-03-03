@@ -14,4 +14,6 @@ cache:
 build:
   stage: build
   script:
-    - ./gradlew build
+    - ./gradlew cloneOrUpdateFuzzDb
+    - pwd
+    - ls -al
