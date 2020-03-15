@@ -57,13 +57,16 @@ val cloneOrUpdateFuzzDb by tasks.registering {
     }
 }
 
+val RESOURCE_ATTACK_FOLDER = "$buildDir/resources/main/attack"
+val GENERATED_JAVA_FOLDER = "$buildDir/generated/java"
+
 val copyFuzzDbFiles by tasks.registering {
-    //dependsOn(cloneOrUpdateFuzzDb)
+    dependsOn(cloneOrUpdateFuzzDb)
 
     doLast {
         copy {
             from(fileTree("$buildDir/fuzzDb/attack"))
-            into("./src/main/resources")
+            into("$RESOURCE_ATTACK_FOLDER")
         }
     }
 }
@@ -73,55 +76,69 @@ val generateFuzzEnum by tasks.registering {
 
     doLast {
         val generator = FuzzDbEnumGenerator()
-        generator.generateEnum("src/main/resources")
+        generator.generateEnum("$RESOURCE_ATTACK_FOLDER")
     }
 }
 
+sourceSets["main"].java {
+    srcDirs("$GENERATED_JAVA_FOLDER")
+}
+
+sourceSets["main"].resources {
+    srcDirs("$RESOURCE_ATTACK_FOLDER")
+}
+
+
 tasks.compileJava {
     dependsOn(tasks.licenseFormat)
-    dependsOn(cloneOrUpdateFuzzDb)
+    dependsOn(generateFuzzEnum)
 }
 
 class FuzzDbEnumGenerator {
 
-    private val SOURCE_FILEPATH = "src/main/java/com/github/fuzzdbunit/params/provider/FuzzFile.java"
-    private val TARGET_FILEPATH = "src/main/java/com/github/fuzzdbunit/params/provider/FuzzFile.java.tmp"
+    private val SOURCE_FILEPATH = "$projectDir/src/main/templates/FuzzFile.java"
+    private val TARGET_FOLDER = "$GENERATED_JAVA_FOLDER/com/github/fuzzdbunit/params/provider/"
+    private val TARGET_FILENAME = "FuzzFile.java"
 
     fun generateEnum(path: String): Boolean {
         println("Path: " + path)
-        val sourceFile = File(SOURCE_FILEPATH)
-        val targetFile = File(TARGET_FILEPATH)
-        val reader = sourceFile.bufferedReader()
-        val writer = targetFile.bufferedWriter()
+        // create reader
+        val reader = File(SOURCE_FILEPATH).bufferedReader()
+        // create writer
+        val targetFolder = File(TARGET_FOLDER)
+        targetFolder.mkdirs()
+        val writer = File(targetFolder, TARGET_FILENAME).bufferedWriter()
+
         val enumNames = File(path)
                 .walk()
                 .filter { it.isFile }
                 .filter { it.canonicalPath.contains(".txt") }
                 .map { buildEnumName(it) }
                 .toMap()
-        enumNames.forEach { it -> println(it) }
         val state = State()
 
-        reader.forEachLine {
-            if (state.mustCopy(it)) {
-                writer.write(it)
-                writer.newLine()
-            } else if (state.mustAppendEnums()) {
-                val nameIt = enumNames.iterator()
-                for ((enumName, filename) in nameIt) {
-                    writer.write("  $enumName(\"$filename\")")
-                    if (nameIt.hasNext()) {
-                        writer.append(",")
-                    } else {
-                        writer.append(";")
-                    }
-                    writer.newLine()
+        reader.forEachLine { l -> processLine(l, state, writer, enumNames) }
+        reader.close()
+        writer.close()
+        return true
+    }
+
+    private fun processLine(l: String, state: State, writer: java.io.BufferedWriter, enumNames: Map<String, String>) {
+        if (state.mustCopy(l)) {
+            writer.write(l)
+            writer.newLine()
+        } else if (state.mustAppendEnums()) {
+            val nameIt = enumNames.iterator()
+            for ((enumName, filename) in nameIt) {
+                writer.write("  $enumName(\"$filename\")")
+                if (nameIt.hasNext()) {
+                    writer.append(",")
+                } else {
+                    writer.append(";")
                 }
+                writer.newLine()
             }
         }
-        writer.close()
-        targetFile.copyTo(sourceFile, true)
-        return true
     }
 
     private fun buildEnum(enumName: String, filename: String): String {
@@ -134,7 +151,7 @@ class FuzzDbEnumGenerator {
                 .substringAfter("resources" + File.separatorChar)
                 .replace("\\", "/")
         val enumName = relativePath
-                .substringAfter("attack.")
+                .substringAfter("attack/")
                 .substringBefore(".txt")
                 .replace("-", "_")
                 .replace("/", "_")
@@ -158,7 +175,7 @@ class FuzzDbEnumGenerator {
 
         fun mustCopy(line: String): Boolean {
             if (partNumber == 1) {
-                if (line.contains("public enum FuzzFile")) {
+                if (line.contains("Begin of list!")) {
                     partNumber++
                     mustAppend = true
                 }
