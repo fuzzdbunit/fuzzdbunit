@@ -5,9 +5,8 @@ FuzzSource is an [argument source](https://junit.org/junit5/docs/5.3.0/api/org/j
 as defined in JUnit 5. So please look at the [JUnit 5 documentation ](https://junit.org/junit5/docs/current/user-guide/)
 for details about how to use argument sources.
 
-Currently, FuzzUnit is not yet available on Maven Central. To use FuzzUnit, download the code, then
-build the jar (see the [Developer Guide](./developer-guide.md) for details), and finally copy this
-jar in a directory belonging to the classpath of the tests.
+Currently, FuzzUnit is not yet available on Maven Central. To use FuzzUnit, download the jar [here](https://gitlab.com/fuzzdbunit/fuzzdbunit/-/jobs/artifacts/master/raw/build/libs/fuzzdbunit-0.1-SNAPSHOT.jar?job=build)
+and copy it in a directory belonging to the classpath of the tests.
 
 FuzzSource takes the following parameters:
 
