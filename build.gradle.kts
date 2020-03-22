@@ -34,7 +34,7 @@ license {
 tasks.test {
     useJUnitPlatform()
     testLogging.showStandardStreams = true
-    classpath.plus("build/resources/test")
+    classpath.plus("$buildDir/resources/test")
 
     filter {
         //include tests
@@ -43,6 +43,7 @@ tasks.test {
 }
 
 val cloneOrUpdateFuzzDb by tasks.registering {
+    println("buildDir: $buildDir")
     doLast {
         if (File("$buildDir/fuzzDb").exists()) {
             println("Update fuzzDB folder")
