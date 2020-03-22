@@ -143,7 +143,7 @@ class FuzzDbEnumGenerator {
 
     fun buildEnumName(f: File): Pair<String, String> {
         val relativePath = f.canonicalPath
-                .substringAfter("resources" + File.separatorChar)
+                .substringAfter("main" + File.separatorChar)
                 .replace("\\", "/")
         val enumName = relativePath
                 .substringAfter("attack/")
