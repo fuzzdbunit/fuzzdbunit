@@ -84,11 +84,6 @@ sourceSets["main"].java {
     srcDirs("$GENERATED_JAVA_FOLDER")
 }
 
-sourceSets["main"].resources {
-    srcDirs("$RESOURCE_ATTACK_FOLDER")
-}
-
-
 tasks.compileJava {
     dependsOn(tasks.licenseFormat)
     dependsOn(generateFuzzEnum)

@@ -17,6 +17,9 @@ FuzzSource takes the following parameters:
 
 Example:
 ```
+import com.github.fuzzdbunit.params.provider.FuzzSource;
+import static com.github.fuzzdbunit.params.provider.FuzzFile.*;
+
 @ParameterizedTest(name = "Fuzz testing")
 @FuzzSource(files = {BUSINESS_LOGIC_COMMONMETHODNAMES, BUSINESS_LOGIC_DEBUGPARAMS_JSON_FUZZ},
             paddingValues = { null, "" } )
