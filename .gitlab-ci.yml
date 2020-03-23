@@ -15,7 +15,7 @@ build:
   stage: build
   script:
     - ./gradlew jar
-    - ls -al build/resources/main
+    - ls -al build/fuzzDb
     - echo "***********************"
     - ls -al build/generated/java/com/github/fuzzdbunit/params/provider
   artifacts:

@@ -63,6 +63,7 @@ val GENERATED_JAVA_FOLDER = "$buildDir/generated/java"
 
 val copyFuzzDbFiles by tasks.registering {
     dependsOn(cloneOrUpdateFuzzDb)
+    println("Copy to $RESOURCE_ATTACK_FOLDER")
 
     doLast {
         copy {
