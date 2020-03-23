@@ -17,7 +17,9 @@ build:
     - ./gradlew jar
     - ls -al build/fuzzDb
     - echo "***********************"
-    - ls -al build/generated/java/com/github/fuzzdbunit/params/provider
+    - ls -al build/resources
+    - echo "***********************"
+    - cat build/generated/java/com/github/fuzzdbunit/params/provider/FuzzFile.java
   artifacts:
     paths:
     - build/libs/fuzzdbunit-0.1-SNAPSHOT.jar
