@@ -14,8 +14,10 @@ cache:
 build:
   stage: build
   script:
+    - ll
     - ./gradlew jar
+    - ll
   artifacts:
     paths:
-    - builds/libs/fuzzdbunit-0.1-SNAPSHOT.jar
+    - build/libs/fuzzdbunit-0.1-SNAPSHOT.jar
     expire_in: 2 hours
