@@ -15,9 +15,9 @@ build:
   stage: build
   script:
     - ./gradlew jar
-    - ls -al build
+    - ls -al build/resources/main
     - echo "***********************"
-    - ls -al build/libs
+    - ls -al build/generated/java/com/github/fuzzdbunit/params/provider
   artifacts:
     paths:
     - build/libs/fuzzdbunit-0.1-SNAPSHOT.jar
