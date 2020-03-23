@@ -38,7 +38,8 @@ class FuzzArgumentsProviderTest {
   static Stream<String> fuzzFileStream() throws IOException {
     System.out.println(Paths.get("build/fuzzDb/attack"));
     return Files.walk(Paths.get("build/fuzzDb/attack"))
-        .filter(f -> f.toString().endsWith("txt"))
+            .filter(f -> f.toString().endsWith(".txt"))
+            .filter(f -> !f.toString().endsWith(".doc.txt"))
         .map(p -> extractEnumName(p));
   }
 

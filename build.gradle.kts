@@ -58,7 +58,8 @@ val cloneOrUpdateFuzzDb by tasks.registering {
     }
 }
 
-val RESOURCE_ATTACK_FOLDER = "$buildDir/resources/main/attack"
+val GENERATED_RESOURCE_FOLDER = "$buildDir/generated/resources"
+val RESOURCE_ATTACK_FOLDER = "$GENERATED_RESOURCE_FOLDER/attack"
 val GENERATED_JAVA_FOLDER = "$buildDir/generated/java"
 
 val copyFuzzDbFiles by tasks.registering {
@@ -86,6 +87,10 @@ sourceSets["main"].java {
     srcDirs("$GENERATED_JAVA_FOLDER")
 }
 
+sourceSets["main"].resources {
+    srcDirs("$GENERATED_RESOURCE_FOLDER")
+}
+
 tasks.compileJava {
     dependsOn(tasks.licenseFormat)
     dependsOn(generateFuzzEnum)
@@ -110,6 +115,7 @@ class FuzzDbEnumGenerator {
                 .walk()
                 .filter { it.isFile }
                 .filter { it.canonicalPath.contains(".txt") }
+                .filter { !it.canonicalPath.contains(".doc.txt") }
                 .map { buildEnumName(it) }
                 .toMap()
         val state = State()
@@ -145,7 +151,7 @@ class FuzzDbEnumGenerator {
 
     fun buildEnumName(f: File): Pair<String, String> {
         val relativePath = f.canonicalPath
-                .substringAfter("main" + File.separatorChar)
+                .substringAfter("resources" + File.separatorChar)
                 .replace("\\", "/")
         val enumName = relativePath
                 .substringAfter("attack/")
