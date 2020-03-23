@@ -14,9 +14,10 @@ cache:
 build:
   stage: build
   script:
-    - ls -al
     - ./gradlew jar
-    - ls -al
+    - ls -al build
+    - echo "***********************"
+    - ls -al build/libs
   artifacts:
     paths:
     - build/libs/fuzzdbunit-0.1-SNAPSHOT.jar
