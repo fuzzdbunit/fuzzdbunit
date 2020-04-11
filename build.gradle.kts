@@ -28,7 +28,7 @@ configure<JavaPluginConvention> {
 }
 
 license {
-    exclude("**/*.txt")
+    excludes(listOf("**/*.txt", "**/*.html"))
 }
 
 tasks.test {
