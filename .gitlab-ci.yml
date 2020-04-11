@@ -3,6 +3,7 @@ image: gradle:alpine
 variables:
   GRADLE_OPTS: ""
 
+
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
@@ -14,6 +15,7 @@ cache:
 build:
   stage: build
   script:
+    - echo $RELEASE_COUNTER
     - ./gradlew jar
   artifacts:
     paths:
