@@ -12,14 +12,28 @@ cache:
     - .gradle/wrapper
     - .gradle/caches
 
+stages:
+  - build
+  - test
+  - release
+
 build:
   stage: build
   script:
-    - echo $RELEASE_COUNTER
     - ./gradlew jar
-  after_script:
-    - export $RELEASE_COUNTER=10
   artifacts:
     paths:
-    - build/libs/fuzzdbunit-0.1-SNAPSHOT.jar
+    - build/libs/fuzzdbunit*.jar
     expire_in: 2 hours
+
+test:
+  stage: test
+  script:
+    - ./gradlew test
+
+release:
+  stage: release
+  script:
+    - ./gradlew release
+    - git commit -m "Update version"
+    - git push

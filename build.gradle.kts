@@ -1,13 +1,15 @@
 import org.ajoberstar.grgit.Grgit
+import net.thauvin.erik.gradle.semver.SemverIncrementTask
 
 plugins {
     java
     id("org.ajoberstar.grgit") version "4.0.0"
     id("com.github.hierynomus.license") version "0.15.0"
+    id("net.thauvin.erik.gradle.semver") version "1.0.4"
+    id("com.github.ben-manes.versions").version("0.28.0")
 }
 
 group = "com.github.fuzzdbunit"
-version = "0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -39,6 +41,16 @@ tasks.test {
     filter {
         //include tests
         includeTestsMatching("*Test")
+    }
+}
+
+tasks.register("release") {
+    doFirst() {
+        println("Deploy to maven Central")
+    }
+    doLast() {
+        println("Incrementing version..")
+        tasks.incrementPatch.get().increment()
     }
 }
 
