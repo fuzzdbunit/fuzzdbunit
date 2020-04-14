@@ -35,5 +35,3 @@ release:
   stage: release
   script:
     - ./gradlew release
-    - git commit -m "Update version"
-    - git push
