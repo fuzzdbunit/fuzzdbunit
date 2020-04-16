@@ -51,9 +51,15 @@ tasks.register("release") {
     doLast() {
         println("Incrementing version..")
         tasks.incrementPatch.get().increment()
+        println("Opening git..."+System.getenv("GRGIT_USER")+":"+System.getenv("GRGIT_PASS"))
         val grgit = Grgit.open(mapOf("dir" to "$projectDir/.git"))
+        println("Adding version.properties")
         grgit.add(mapOf("patterns" to listOf("version.properties")))
+        println("Commiting...")
         grgit.commit(mapOf("message" to "Update version"))
+        println("Pushing...")
+        grgit.push()
+        println("Finished updating version.properties")
     }
 }
 
