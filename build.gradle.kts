@@ -6,7 +6,7 @@ plugins {
     id("org.ajoberstar.grgit") version "4.0.0"
     id("com.github.hierynomus.license") version "0.15.0"
     id("net.thauvin.erik.gradle.semver") version "1.0.4"
-    id("com.github.ben-manes.versions").version("0.28.0")
+    id("com.github.ben-manes.versions") version "0.28.0"
 }
 
 group = "com.github.fuzzdbunit"
@@ -18,6 +18,7 @@ repositories {
 
 dependencies {
     implementation("org.junit.jupiter:junit-jupiter-params:5.5.0")
+    implementation("com.github.kittinunf.fuel:fuel:1.3.30")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
     testImplementation("org.assertj:assertj-core:3.14.0")
@@ -50,16 +51,11 @@ tasks.register("release") {
     }
     doLast() {
         println("Incrementing version..")
+        val counter = System.getenv("RELEASSE_COUNTER")
+        println("Release #"+counter)
         tasks.incrementPatch.get().increment()
         println("Opening git..."+System.getenv("GRGIT_USER")+":"+System.getenv("GRGIT_PASS"))
-        val grgit = Grgit.open(mapOf("dir" to "$projectDir/.git"))
-        println("Adding version.properties")
-        grgit.add(mapOf("patterns" to listOf("version.properties")))
-        println("Commiting...")
-        grgit.commit(mapOf("message" to "Update version"))
-        println("Pushing...")
-        grgit.push()
-        println("Finished updating version.properties")
+
     }
 }
 
