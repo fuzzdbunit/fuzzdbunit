@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     implementation("org.junit.jupiter:junit-jupiter-params:5.5.0")
-    implementation("com.github.kittinunf.fuel:fuel:1.3.30")
+    implementation("com.github.kittinunf.fuel:fuel:2.2.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
     testImplementation("org.assertj:assertj-core:3.14.0")
