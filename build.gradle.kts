@@ -51,7 +51,7 @@ tasks.register("release") {
     }
     doLast() {
         println("Incrementing version..")
-        val counter = System.getenv("RELEASSE_COUNTER")
+        val counter = System.getenv("RELEASE_COUNTER")
         println("Release #"+counter)
         tasks.incrementPatch.get().increment()
         println("Opening git..."+System.getenv("GRGIT_USER")+":"+System.getenv("GRGIT_PASS"))
