@@ -10,6 +10,7 @@ plugins {
 }
 
 group = "com.github.fuzzdbunit"
+version = "0.1." + System.getenv("RELEASE_COUNTER")
 
 repositories {
     mavenCentral()
@@ -51,11 +52,6 @@ tasks.register("release") {
     }
     doLast() {
         println("Incrementing version..")
-        val counter = System.getenv("RELEASE_COUNTER")
-        println("Release #"+counter)
-        tasks.incrementPatch.get().increment()
-        println("Opening git..."+System.getenv("GRGIT_USER")+":"+System.getenv("GRGIT_PASS"))
-
     }
 }
 
