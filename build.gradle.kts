@@ -3,6 +3,8 @@ import net.thauvin.erik.gradle.semver.SemverIncrementTask
 
 plugins {
     java
+    `maven-publish`
+    signing
     id("org.ajoberstar.grgit") version "4.0.0"
     id("com.github.hierynomus.license") version "0.15.0"
     id("net.thauvin.erik.gradle.semver") version "1.0.4"
@@ -10,7 +12,7 @@ plugins {
 }
 
 group = "com.github.fuzzdbunit"
-version = "0.1." + System.getenv("RELEASE_COUNTER")
+version = "0.1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -107,6 +109,73 @@ sourceSets["main"].resources {
 tasks.compileJava {
     dependsOn(tasks.licenseFormat)
     dependsOn(generateFuzzEnum)
+}
+
+tasks.register<Jar>("sourcesJar") {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allJava)
+}
+
+tasks.javadoc {
+    if (JavaVersion.current().isJava9Compatible) {
+        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+    }
+}
+
+tasks.register<Jar>("javadocJar") {
+    archiveClassifier.set("javadoc")
+    from(tasks.javadoc.get().destinationDir)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+
+            pom {
+                name.set("FuzzDbUnit")
+                description.set("A JUnit 5 extension for fuzzing java interfaces in unit ou integrastion tests")
+                url.set("https://gitlab.com/fuzzdbunit/fuzzdbunit")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("fuzzdbunit")
+                        name.set("Patrick M.J. Roth")
+                        email.set("parot5561@gmail.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:git://gitlab.com/fuzzdbunit/fuzzdbunit.git")
+                    developerConnection.set("scm:git:https://gitlab.com/fuzzdbunit/fuzzdbunit.git")
+                    url.set("https://gitlab.com/fuzzdbunit/fuzzdbunit")
+                }
+            }
+
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+        }
+    }
+
+    repositories {
+        maven {
+            val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+            credentials{
+                username = "pmjroth"
+                password = ""
+            }
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }
 
 class FuzzDbEnumGenerator {
