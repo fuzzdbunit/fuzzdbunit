@@ -174,6 +174,25 @@ publishing {
     }
 }
 
+gradle.taskGraph.whenReady {
+    if (allTasks.any { it is Sign }) {
+        val id = System.getenv("signing_keyId")
+        val file = System.getenv("signing_secretKeyRingFile")
+        val password = System.getenv("signing_password")
+
+        System.out.println(id)
+        System.out.println(file)
+        System.out.println(password)
+
+        allprojects {
+            extra["signing.keyId"] = id
+            extra["signing.secretKeyRingFile"] = file
+            extra["signing.password"] = password
+        }
+    }
+}
+
+
 signing {
     sign(publishing.publications["mavenJava"])
 }
