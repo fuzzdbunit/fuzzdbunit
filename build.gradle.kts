@@ -1,5 +1,4 @@
 import org.ajoberstar.grgit.Grgit
-import net.thauvin.erik.gradle.semver.SemverIncrementTask
 
 plugins {
     java
@@ -7,21 +6,24 @@ plugins {
     signing
     id("org.ajoberstar.grgit") version "4.0.0"
     id("com.github.hierynomus.license") version "0.15.0"
-    id("net.thauvin.erik.gradle.semver") version "1.0.4"
-    id("com.github.ben-manes.versions") version "0.28.0"
 }
 
 group = "com.github.fuzzdbunit"
-version = "0.1.0-SNAPSHOT"
+version = "0.2"
 
 repositories {
     mavenCentral()
     jcenter()
 }
 
+buildscript{
+    dependencies{
+        classpath("com.github.kittinunf.fuel:fuel:2.2.0")
+    }
+}
+
 dependencies {
     implementation("org.junit.jupiter:junit-jupiter-params:5.5.0")
-    implementation("com.github.kittinunf.fuel:fuel:2.2.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
     testImplementation("org.assertj:assertj-core:3.14.0")
@@ -134,7 +136,7 @@ publishing {
 
             pom {
                 name.set("FuzzDbUnit")
-                description.set("A JUnit 5 extension for fuzzing java interfaces in unit ou integrastion tests")
+                description.set("A JUnit 5 extension for fuzzing java interfaces in unit or integration tests")
                 url.set("https://gitlab.com/fuzzdbunit/fuzzdbunit")
                 licenses {
                     license {
@@ -166,9 +168,14 @@ publishing {
             val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
             val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
             url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+
+            System.out.println("Version: "+version)
+            System.out.println(System.getenv("maven_repo_username"))
+            System.out.println(System.getenv("maven_repo_password"))
+
             credentials{
-                username = "pmjroth"
-                password = ""
+                username = System.getenv("maven_repo_username")
+                password = System.getenv("maven_repo_password")
             }
         }
     }
@@ -179,10 +186,6 @@ gradle.taskGraph.whenReady {
         val id = System.getenv("signing_keyId")
         val file = System.getenv("signing_secretKeyRingFile")
         val password = System.getenv("signing_password")
-
-        System.out.println(id)
-        System.out.println(file)
-        System.out.println(password)
 
         allprojects {
             extra["signing.keyId"] = id
