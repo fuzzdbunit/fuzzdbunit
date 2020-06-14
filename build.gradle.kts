@@ -169,10 +169,6 @@ publishing {
             val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
             url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
 
-            System.out.println("Version: "+version)
-            System.out.println(System.getenv("maven_repo_username"))
-            System.out.println(System.getenv("maven_repo_password"))
-
             credentials{
                 username = System.getenv("maven_repo_username")
                 password = System.getenv("maven_repo_password")
