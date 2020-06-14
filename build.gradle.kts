@@ -2,16 +2,24 @@ import org.ajoberstar.grgit.Grgit
 
 plugins {
     java
+    `maven-publish`
+    signing
     id("org.ajoberstar.grgit") version "4.0.0"
     id("com.github.hierynomus.license") version "0.15.0"
 }
 
 group = "com.github.fuzzdbunit"
-version = "0.1-SNAPSHOT"
+version = "0.2"
 
 repositories {
     mavenCentral()
     jcenter()
+}
+
+buildscript{
+    dependencies{
+        classpath("com.github.kittinunf.fuel:fuel:2.2.0")
+    }
 }
 
 dependencies {
@@ -39,6 +47,15 @@ tasks.test {
     filter {
         //include tests
         includeTestsMatching("*Test")
+    }
+}
+
+tasks.register("release") {
+    doFirst() {
+        println("Deploy to maven Central")
+    }
+    doLast() {
+        println("Incrementing version..")
     }
 }
 
@@ -94,6 +111,89 @@ sourceSets["main"].resources {
 tasks.compileJava {
     dependsOn(tasks.licenseFormat)
     dependsOn(generateFuzzEnum)
+}
+
+tasks.register<Jar>("sourcesJar") {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allJava)
+}
+
+tasks.javadoc {
+    if (JavaVersion.current().isJava9Compatible) {
+        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+    }
+}
+
+tasks.register<Jar>("javadocJar") {
+    archiveClassifier.set("javadoc")
+    from(tasks.javadoc.get().destinationDir)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+
+            pom {
+                name.set("FuzzDbUnit")
+                description.set("A JUnit 5 extension for fuzzing java interfaces in unit or integration tests")
+                url.set("https://gitlab.com/fuzzdbunit/fuzzdbunit")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("fuzzdbunit")
+                        name.set("Patrick M.J. Roth")
+                        email.set("parot5561@gmail.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:git://gitlab.com/fuzzdbunit/fuzzdbunit.git")
+                    developerConnection.set("scm:git:https://gitlab.com/fuzzdbunit/fuzzdbunit.git")
+                    url.set("https://gitlab.com/fuzzdbunit/fuzzdbunit")
+                }
+            }
+
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+        }
+    }
+
+    repositories {
+        maven {
+            val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+
+            credentials{
+                username = System.getenv("maven_repo_username")
+                password = System.getenv("maven_repo_password")
+            }
+        }
+    }
+}
+
+gradle.taskGraph.whenReady {
+    if (allTasks.any { it is Sign }) {
+        val id = System.getenv("signing_keyId")
+        val file = System.getenv("signing_secretKeyRingFile")
+        val password = System.getenv("signing_password")
+
+        allprojects {
+            extra["signing.keyId"] = id
+            extra["signing.secretKeyRingFile"] = file
+            extra["signing.password"] = password
+        }
+    }
+}
+
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }
 
 class FuzzDbEnumGenerator {
