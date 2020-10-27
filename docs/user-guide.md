@@ -36,3 +36,28 @@ void testWithFuzzUnit(String first, String second) {
 	assertNotNull( api.call(first, second) );
 }
 ```
+
+### Finding an attack pattern
+
+FuzzDb offers various attack patterns. The table below summarizes these patterns.
+
+| Pattern | Link |
+| ------ | ------ |
+| authentication     | [authentication](./fuzzDb/attack/authentication/README.md)    |
+| disclosure-source     | [disclosure-source](./fuzzDb/attack/disclosure-source/README.md)    |
+| file-upload     | [file-upload](./fuzzDb/attack/file-upload/README.md)    |
+| malicious-images     | [malicious-images](./fuzzDb/attack/file-upload/malicious-images/README.md)    |
+| http-protocol     | [http-protocol](./fuzzDb/attack/http-protocol/README.md)   |
+| ldap     | [ldap](./fuzzDb/attack/ldap/README.md)    |
+| lfi     | [lfi](./fuzzDb/attack/lfi/README.md)    |
+| no-sql-injection     | [no-sql-injection](./fuzzDb/attack/no-sql-injection/README.md)    |
+| os-cmd-execution     | [os-cmd-execution](./fuzzDb/attack/os-cmd-execution/README.md)    |
+| path-traversal     | [path-traversal](./fuzzDb/attack/path-traversal/README.md)    |
+| redirect     | [redirect](./fuzzDb/attack/redirect/README.md)    |
+| rfi     | [rfi](./fuzzDb/attack/rfi/README.md)    |
+| sql-injection / detect     | [sql-injection / detect](./fuzzDb/attack/sql-injection/detect/README.md)    |
+| sql-injection / exploit     | [sql-injection / exploit](./fuzzDb/attack/sql-injection/exploit/README.md)    |
+| sql-injection / payloads-sql-blind     | [sql-injection / payloads-sql-blind](./fuzzDb/attack/sql-injection/payloads-sql-blind/README.md)    |
+| unicode     | [unicode](./fuzzDb/attack/unicode/README.md)    |
+| xpath     | [xpath](./fuzzDb/attack/xpath/README.md)    |
+| xss     | [xss](./fuzzDb/attack/xss/README.md)    |

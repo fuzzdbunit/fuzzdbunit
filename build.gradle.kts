@@ -78,6 +78,7 @@ val cloneOrUpdateFuzzDb by tasks.registering {
 val GENERATED_RESOURCE_FOLDER = "$buildDir/generated/resources"
 val RESOURCE_ATTACK_FOLDER = "$GENERATED_RESOURCE_FOLDER/attack"
 val GENERATED_JAVA_FOLDER = "$buildDir/generated/java"
+val FUZZDB_DOCS_FOLDER = "$projectDir/docs/fuzzDb/"
 
 val copyFuzzDbFiles by tasks.registering {
     dependsOn(cloneOrUpdateFuzzDb)
@@ -87,6 +88,23 @@ val copyFuzzDbFiles by tasks.registering {
         copy {
             from(fileTree("$buildDir/fuzzDb/attack"))
             into("$RESOURCE_ATTACK_FOLDER")
+        }
+    }
+}
+
+val copyFuzzDbDocs by tasks.registering {
+    dependsOn(cloneOrUpdateFuzzDb)
+    println("Copy to $RESOURCE_ATTACK_FOLDER")
+
+    doLast {
+        copy {
+            from(fileTree("$buildDir/fuzzDb"))
+            into("$FUZZDB_DOCS_FOLDER")
+            include("attack/**/*.md")
+            include("_copyright.txt")
+            include("*.png")
+
+            includeEmptyDirs = false
         }
     }
 }
