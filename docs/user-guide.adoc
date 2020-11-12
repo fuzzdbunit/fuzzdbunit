@@ -41,6 +41,7 @@ void testWithFuzzUnit(String first, String second) {
 
 FuzzDb offers various attack patterns. The table below summarizes these patterns.
 
+|===
 | Pattern | Link |
 | ------ | ------ |
 | authentication     | [authentication](./fuzzDb/attack/authentication/README.md)    |
@@ -61,3 +62,4 @@ FuzzDb offers various attack patterns. The table below summarizes these patterns
 | unicode     | [unicode](./fuzzDb/attack/unicode/README.md)    |
 | xpath     | [xpath](./fuzzDb/attack/xpath/README.md)    |
 | xss     | [xss](./fuzzDb/attack/xss/README.md)    |
+|===
