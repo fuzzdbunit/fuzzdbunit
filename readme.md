@@ -41,7 +41,7 @@ are easier to fix. Because
 
 
 ### Links
-* [User Guide](./docs/user-guide.md)
+* [User Guide](docs/user-guide.adoc)
 * [Developer Guide](./docs/developer-guide.md)
 * [Release notes](./docs/release-notes.md)
 * [License](./LICENSE.md)
