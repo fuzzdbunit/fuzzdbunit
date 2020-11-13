@@ -2,19 +2,25 @@
 
 ### Requirements
 * JDK 11
+* JUnit 5
 
 ### Building
+
 Building the jar:
-```
+
+[source, script]
+----
 ./gradlew jar
-```
+----
 
 ### Updating fuzz data
 
 Updating the fuzz data from FuzzDB:
-```
+
+[source, script]
+----
 ./gradlew generateFuzzEnum
-```
+----
 Please note that an internet connection is required for downloading fuzz data from FuzzDB.
 
 ### Style Guide

@@ -1,0 +1,14 @@
+## Release Notes
+
+### Version 0.2
+
+* Deployment in Maven Central
+
+### Version 0.1
+
+* Basic functionality of FuzzDbUnit
+
+### Further possible developments
+
+* Concatenate several files for each argument of the FuzzSource annotation
+* Add exceptions, that is patterns of a file that must not be sent
