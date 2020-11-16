@@ -1,8 +1,8 @@
 ## User Guide
 
 ### Using FuzzSource
-FuzzSource is an [argument source](https://junit.org/junit5/docs/5.3.0/api/org/junit/jupiter/params/provider/ArgumentsSource.html)
-as defined in JUnit 5. So please look at the [JUnit 5 documentation ](https://junit.org/junit5/docs/current/user-guide/)
+FuzzSource is an https://junit.org/junit5/docs/5.3.0/api/org/junit/jupiter/params/provider/ArgumentsSource.html[argument source]
+as defined in JUnit 5. So please look at the https://junit.org/junit5/docs/current/user-guide/[JUnit 5 documentation ]
 for details about how to use argument sources.
 
 To use FuzzUnit, just add the following dependency to the pom.xml your project:
@@ -19,6 +19,7 @@ To use FuzzUnit, just add the following dependency to the pom.xml your project:
 
 Then, annotate your test with ```@ParameterizedTest```, then add ```@FuzzSource```. The latter takes the following parameters:
 
+[%header, cols="1,1,3"]
 |======
 | Parameter | Status |Description
 | files | Mandatory | A list of files to be used to provide values to the {@code ParameterizedTest} method. A java Enum is provided for representing the available files. The first file of the array will feed the first parameter of the test function, the second file feeds the second parameter, and so on
@@ -32,26 +33,28 @@ Example:
 import com.github.fuzzdbunit.params.provider.FuzzSource;
 import static com.github.fuzzdbunit.params.provider.FuzzFile.*;
 
-@ParameterizedTest(name = "Fuzz testing")
-@FuzzSource(files = {BUSINESS_LOGIC_COMMONMETHODNAMES, BUSINESS_LOGIC_DEBUGPARAMS_JSON_FUZZ},
-            paddingValues = { null, "" } )
-void testWithFuzzUnit(String first, String second) {
-	JsonApi api = new JsonApi();
-	assertNotNull( api.call(first, second) );
+@ParameterizedTest(name = "Fuzz testing validator")
+@FuzzSource(files = {FuzzFile.XSS_XSS_URI})
+void testValidationWithFuzzUnit(String content) {
+    Assertions.assertThrows(ValidationException.class, () -> {
+        Greeting g = Greeting.build(10, content);
+    }, "Failed with ["+content+"]");
 }
 -----
 
-.Sample project
-[%header]
+[%header,cols="1,3"]
 |====
 |Sample        | Description
-|maven-service | Spring service with maven
+|maven-service | Spring service with maven. Shows a test method taking one argument and a second test
+method taking two.
+
 |====
 
 ### Finding an attack pattern
 
 FuzzDb offers various attack patterns. The table below summarizes these patterns.
 
+[%header,cols="1,3"]
 |===
 | Pattern | Link
 | authentication     | link:fuzzDb/attack/authentication/README.md[authentication]
