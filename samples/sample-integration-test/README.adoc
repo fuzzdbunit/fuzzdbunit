@@ -1,0 +1,13 @@
+== Sample with integration test
+
+=== Description
+
+This sample is based on a Quarkus sample provided by Baeldung: https://www.baeldung.com/java-quarkus-testing
+
+To demonstrate FuzzDbUnit, we removed some tests and modified the test class `LibraryResourceHttpResourceIntegrationTest.java`
+to execute an integration test with FuzzDbUnit.
+
+See FuzzDbUnit in action with the maven command:
+
+ ./mvnw verify
+

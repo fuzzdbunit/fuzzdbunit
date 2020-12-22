@@ -45,8 +45,10 @@ void testValidationWithFuzzUnit(String content) {
 [%header,cols="1,3"]
 |====
 |Sample        | Description
-|maven-service | Spring service with maven. Shows a test method taking one argument and a second test
-method taking two.
+|sample-unit-test | This sample is derived from a Spring service with maven. Shows a test method fuzzed with one argument
+and a second test taking two.
+|sample-integration-test | This example is derived from an example of Quarkus project provided by Baeldung.
+It shows FuzzDbUnit used in an integration test.
 
 |====
 
