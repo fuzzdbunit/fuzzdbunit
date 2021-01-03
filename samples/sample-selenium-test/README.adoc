@@ -1,0 +1,28 @@
+== Sample with Selenium test
+
+=== Description
+
+This sample uses Selenium to test a web application, in our case OWASP WebGoat.
+
+=== Requirements
+
+To run this test, you will need:
+
+* JDK 11+
+* Firefox
+* Gecko driver (driver for Firefox)
+
+You can use any browser supported by Selenium, but you have to install the corresponding driver.
+
+=== Fuzz test
+
+WebGoat has many examples of vulnerabilities. We fuzz test one of them, the _Dangerous use of Eval_,
+to be found in _AJAX Security_ menu on the left.
+
+To run the test, just type:
+
+....
+ ./gradlew test
+....
+
+NOTE: the test fails, which is normal and expected, since the application is not safe.

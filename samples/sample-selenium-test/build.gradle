@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'com.palantir.docker-run' version '0.25.0'
+}
+
+group 'com.github.fuzzdbunit.sample'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation(platform('org.junit:junit-bom:5.7.0'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation("org.hamcrest:hamcrest:2.2")
+    testImplementation('io.github.bonigarcia:selenium-jupiter:3.3.5')
+    testImplementation('com.github.fuzzdbunit:fuzzdbunit:0.2')
+}
+
+dockerRun {
+    name 'webgoat'
+    image 'webgoat/webgoat-7.1'
+    ports '8080:8080'
+    clean true
+}
+
+test {
+    useJUnitPlatform()
+
+    dependsOn(project.tasks['dockerRun'])
+    finalizedBy(project.tasks['dockerStop'])
+}
