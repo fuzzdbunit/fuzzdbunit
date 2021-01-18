@@ -27,7 +27,7 @@ class LibraryResourceHttpResourceIntegrationTest {
     URL libraryEndpoint;
 
     @ParameterizedTest
-    @FuzzSource(files = {FuzzFile.SQL_INJECTION_DETECT_GENERICBLIND})
+    @FuzzSource(file = FuzzFile.SQL_INJECTION_DETECT_GENERICBLIND)
     void whenGetBooksByTitle_thenBookShouldBeFound(String name) {
         System.out.println("Testing: "+name);
         given().contentType(ContentType.JSON).param("query", name)

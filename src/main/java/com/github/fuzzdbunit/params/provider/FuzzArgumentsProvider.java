@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
@@ -29,57 +30,44 @@ import org.junit.jupiter.params.support.AnnotationConsumer;
 /**
  * @since 5.0
  */
-class FuzzArgumentsProvider implements ArgumentsProvider, AnnotationConsumer<FuzzSource> {
+class FuzzArgumentsProvider implements ArgumentsProvider, AnnotationConsumer<FuzzSources> {
 
-  private FuzzSource annotation;
-  private FuzzFile[] files;
-  private List<List<String>> lineList;
-  private String[] paddingValues;
+    private FuzzSources fuzzSources;
+    private List<List<String>> lineList;
 
-  FuzzArgumentsProvider() {
-  }
-
-  @Override
-  public void accept(FuzzSource annotation) {
-    this.annotation = annotation;
-    this.files = annotation.files();
-    this.paddingValues = getPaddingValues(annotation.paddingValues());
-  }
-
-  @Override
-  public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-    FuzzFile longerFile = Arrays.stream(files)
-        .max(Comparator.comparing(FuzzFile::size)).get();
-    int maxSize = longerFile.size();
-
-    lineList = Arrays.stream(files).map(FuzzFile::getData)
-        .collect(Collectors.toList());
-
-    return IntStream.range(0, maxSize).mapToObj(i -> provideObjectArray(i))
-        .map(Arguments::of);
-  }
-
-  private String[] provideObjectArray(int i) {
-    String[] stringArgs = new String[lineList.size()];
-    int j = 0;
-    for (List<String> positions : lineList) {
-      if (i < positions.size()) {
-        stringArgs[j++] = positions.get(i);
-      } else {
-        stringArgs[j] = paddingValues[j];
-        j++;
-      }
+    FuzzArgumentsProvider() {
     }
-    return stringArgs;
-  }
 
-  private String[] getPaddingValues(String[] pv) {
-    if (pv != null) {
-      return pv;
+    @Override
+    public void accept(FuzzSources annotation) {
+        this.fuzzSources = annotation;
     }
-    String[] defaultPV = new String[this.files.length];
-    Arrays.fill(defaultPV, "");
-    return defaultPV;
-  }
+
+    @Override
+    public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+        FuzzFile longerFile = Arrays.stream(fuzzSources.value()).map(FuzzSource::file)
+                .max(Comparator.comparing(FuzzFile::size)).get();
+        int maxSize = longerFile.size();
+
+        lineList = Arrays.stream(fuzzSources.value()).map(FuzzSource::file).map(FuzzFile::getData)
+                .collect(Collectors.toList());
+
+        return IntStream.range(0, maxSize).mapToObj(i -> provideObjectArray(i))
+                .map(Arguments::of);
+    }
+
+    private String[] provideObjectArray(int i) {
+        String[] stringArgs = new String[lineList.size()];
+        int j = 0;
+        for (List<String> positions : lineList) {
+            if (i < positions.size()) {
+                stringArgs[j++] = positions.get(i);
+            } else {
+                stringArgs[j] = fuzzSources.value()[j].paddingValue();
+                j++;
+            }
+        }
+        return stringArgs;
+    }
 
 }

@@ -35,7 +35,7 @@ public class FuzzDbUnitSeleniumTest {
     }
 
     @ParameterizedTest
-    @FuzzSource(files = {FuzzFile.XSS_XSS_OTHER})
+    @FuzzSource(file = FuzzFile.XSS_XSS_OTHER)
     public void testWebgoatWithSeleniumFuzzingOptimized(String field) {
         System.out.println("Testing [" + field + "]");
 

@@ -25,8 +25,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,126 +37,163 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class FuzzArgumentsProviderTest {
 
-  static Stream<String> fuzzFileStream() throws IOException {
-    System.out.println(Paths.get("build/fuzzDb/attack"));
-    return Files.walk(Paths.get("build/fuzzDb/attack"))
-            .filter(f -> f.toString().endsWith(".txt"))
-            .filter(f -> !f.toString().endsWith(".doc.txt"))
-        .map(p -> extractEnumName(p));
-  }
+    static Stream<String> fuzzFileStream() throws IOException {
+        System.out.println(Paths.get("build/fuzzDb/attack"));
+        return Files.walk(Paths.get("build/fuzzDb/attack"))
+                .filter(f -> f.toString().endsWith(".txt"))
+                .filter(f -> !f.toString().endsWith(".doc.txt"))
+                .map(p -> extractEnumName(p));
+    }
 
-  static String extractEnumName(Path p) {
-    String filename = p.toString();
-    int beginPos = filename.indexOf("attack" + File.separator) + 7;
-    int endPos = filename.length() - 4;
-    return filename.substring(beginPos, endPos)
-        .replace(File.separator, "_")
-        .replace('.', '_')
-        .replace('-', '_')
-        .toUpperCase();
-  }
+    static String extractEnumName(Path p) {
+        String filename = p.toString();
+        int beginPos = filename.indexOf("attack" + File.separator) + 7;
+        int endPos = filename.length() - 4;
+        return filename.substring(beginPos, endPos)
+                .replace(File.separator, "_")
+                .replace('.', '_')
+                .replace('-', '_')
+                .toUpperCase();
+    }
 
-  @SuppressWarnings("unchecked")
-  private static <T> T[] array(T... elements) {
-    return elements;
-  }
+    @SuppressWarnings("unchecked")
+    private static <T> T[] array(T... elements) {
+        return elements;
+    }
 
-  @Test
-  void providesArgumentsSingleFile() {
-    FuzzSource annotation = MockFuzzAnnotationBuilder.fuzzSource().build();
+    @Test
+    void providesArgumentsSingleFile() {
+        FuzzSource fuzzSource = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).build();
+        FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource).toArray(new FuzzSource[1]);
+        FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
-    Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
+        Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
 
-    assertThat(arguments).containsExactly(array("foo1"), array("foo2"), array("foo3"));
-  }
+        assertThat(arguments).containsExactly(array("foo1"), array("foo2"), array("foo3"));
+    }
 
-  @Test
-  void providesArgumentsFileTwice() {
-    FuzzSource annotation = MockFuzzAnnotationBuilder.fuzzSource()
-        .files(FuzzFile.JSON_JSON_FUZZING,
-            FuzzFile.JSON_JSON_FUZZING).build();
+    @Test
+    void providesArgumentsFileTwice() {
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).build();
+        FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource1, fuzzSource2).toArray(new FuzzSource[2]);
+        FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
-    Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
+        Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
 
-    assertThat(arguments)
-        .containsExactly(array("foo1", "foo1"), array("foo2", "foo2"), array("foo3", "foo3"));
-  }
+        assertThat(arguments)
+                .containsExactly(array("foo1", "foo1"), array("foo2", "foo2"), array("foo3", "foo3"));
+    }
 
-  @Test
-  void providesArgumentsTwoFilesLongerFirst() {
-    FuzzSource annotation = MockFuzzAnnotationBuilder.fuzzSource()
-        .files(FuzzFile.JSON_JSON_FUZZING,
-            FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES).build();
+    @Test
+    void providesArgumentsTwoFilesLongerFirst() {
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES).build();
+        FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource1, fuzzSource2).toArray(new FuzzSource[2]);
+        FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
-    Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
+        Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
 
-    assertThat(arguments)
-        .containsExactly(array("foo1", "bar1"), array("foo2", "bar2"),
-            array("foo3", ""));
-  }
+        assertThat(arguments)
+                .containsAnyOf(array("foo1", "bar1"), array("foo2", "bar2"),
+                        array("foo3", null));
+    }
 
-  @Test
-  void providesArgumentsTwoFilesShorterFirst() {
-    FuzzSource annotation = MockFuzzAnnotationBuilder.fuzzSource()
-        .files(FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES, FuzzFile.JSON_JSON_FUZZING
-        ).build();
+    @Test
+    void providesArgumentsTwoFilesShorterFirst() {
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES).build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).build();
+        FuzzSource[] fuzzSources = Arrays.asList(fuzzSource1, fuzzSource2).toArray(new FuzzSource[2]);
+        FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
-    Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
+        Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
 
-    assertThat(arguments)
-        .containsExactly(array("bar1", "foo1"), array("bar2", "foo2"),
-            array("", "foo3"));
-  }
+        assertThat(arguments)
+                .containsExactly(array("bar1", "foo1"), array("bar2", "foo2"),
+                        array(null, "foo3"));
+    }
 
-  @Test
-  void providesArgumentsTwoFilesWithPadding() {
-    FuzzSource annotation = MockFuzzAnnotationBuilder.fuzzSource()
-        .files(FuzzFile.JSON_JSON_FUZZING, FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES)
-        .paddingValues(null, null).build();
+    @Test
+    void providesArgumentsTwoFilesWithPaddingNull() {
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).paddingValue(null).build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES).paddingValue(null).build();
+        FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource1, fuzzSource2).toArray(new FuzzSource[2]);
+        FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
-    Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
+        Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
 
-    assertThat(arguments)
-        .containsExactly(array("foo1", "bar1"), array("foo2", "bar2"),
-            array("foo3", null));
-  }
+        assertThat(arguments)
+                .containsExactly(array("foo1", "bar1"), array("foo2", "bar2"),
+                        array("foo3", null));
+    }
 
-  @Test
-  void providesArgumentsWithNormalFileWithPadding() {
-    FuzzSource annotation = MockFuzzAnnotationBuilder.fuzzSource()
-        .files(FuzzFile.JSON_JSON_FUZZING, FuzzFile.BUSINESS_LOGIC_COMMONDEBUGPARAMNAMES)
-        .paddingValues(null, null).build();
+    @Test
+    void providesArgumentsTwoFilesWithPaddingEmpty() {
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).paddingValue("").build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES).paddingValue("").build();
+        FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource1, fuzzSource2).toArray(new FuzzSource[2]);
+        FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
-    Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
+        Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
 
-    assertThat(arguments)
-        .contains(array("foo1", "7357=1"), array("foo2", "7357=true"),
-            array("foo3", "7357=y"), array(null, "7357=yes"));
-  }
+        assertThat(arguments)
+                .containsExactly(array("foo1", "bar1"), array("foo2", "bar2"),
+                        array("foo3", ""));
+    }
 
-  @ParameterizedTest
-  @MethodSource("fuzzFileStream")
-  void testFuzzFiles(String fuzzEnumName) {
-    FuzzFile ff = FuzzFile.valueOf(fuzzEnumName);
-    System.out.println(ff.getFilePath());
-    assertThat(ff).isNotNull();
-    assertThat(ff.getData().size()).isNotEqualTo(0);
-  }
+    @Test
+    void providesArgumentsFourFilesWithPadding() {
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES).paddingValue("").build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).paddingValue("").build();
+        FuzzSource fuzzSource3 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.HTTP_PROTOCOL_CRLF_INJECTION).paddingValue("").build();
+        FuzzSource fuzzSource4 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.XSS_XSS_OTHER).paddingValue("").build();
+        FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource1, fuzzSource2, fuzzSource3, fuzzSource4).toArray(new FuzzSource[2]);
+        FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
-  private Stream<Object[]> provideArguments(FuzzFile file, FuzzSource annotation) {
-    FuzzFile expectedFile = annotation.files()[0];
+        Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
 
-    FuzzArgumentsProvider provider = new FuzzArgumentsProvider();
-    return provideArguments(provider, annotation);
-  }
+        assertThat(arguments)
+                .containsExactly(array( "bar1", "foo1","hello1", "world1"), array("bar2","foo2", "hello2", "world2"),
+                        array( "","foo3","", "world3"));
+    }
 
-  private Stream<Object[]> provideArguments(FuzzArgumentsProvider provider,
-      FuzzSource annotation) {
-    provider.accept(annotation);
-    ExtensionContext context = mock(ExtensionContext.class);
-    when(context.getTestClass()).thenReturn(Optional.of(FuzzArgumentsProviderTest.class));
-    doCallRealMethod().when(context).getRequiredTestClass();
-    return provider.provideArguments(context).map(Arguments::get);
-  }
+    @Test
+    void providesArgumentsWithNormalFileWithPadding() {
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).paddingValue(null).build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.BUSINESS_LOGIC_COMMONDEBUGPARAMNAMES).paddingValue(null).build();
+        FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource1, fuzzSource2).toArray(new FuzzSource[2]);
+        FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
+
+        Stream<Object[]> arguments = provideArguments(new FuzzArgumentsProvider(), annotation);
+
+        assertThat(arguments)
+                .contains(array("foo1", "7357=1"), array("foo2", "7357=true"),
+                        array("foo3", "7357=y"), array(null, "7357=yes"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("fuzzFileStream")
+    void testFuzzFiles(String fuzzEnumName) {
+        FuzzFile ff = FuzzFile.valueOf(fuzzEnumName);
+        System.out.println(ff.getFilePath());
+        assertThat(ff).isNotNull();
+        assertThat(ff.getData().size()).isNotEqualTo(0);
+    }
+
+//    private Stream<Object[]> provideArguments(FuzzFile file, FuzzSource annotation) {
+//        FuzzFile expectedFile = annotation.file();
+//
+//        FuzzArgumentsProvider provider = new FuzzArgumentsProvider();
+//        return provideArguments(provider, annotation);
+//    }
+
+    private Stream<Object[]> provideArguments(FuzzArgumentsProvider provider,
+                                              FuzzSources annotation) {
+        provider.accept(annotation);
+        ExtensionContext context = mock(ExtensionContext.class);
+        when(context.getTestClass()).thenReturn(Optional.of(FuzzArgumentsProviderTest.class));
+        doCallRealMethod().when(context).getRequiredTestClass();
+        return provider.provideArguments(context).map(Arguments::get);
+    }
 
 }
