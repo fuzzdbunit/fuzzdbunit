@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.fuzzdbunit"
-version = "0.2"
+version = "0.3-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -36,7 +36,7 @@ configure<JavaPluginConvention> {
 }
 
 license {
-    excludes(listOf("**/*.txt", "**/*.html"))
+    excludes(listOf("**/*.txt", "**/*.html", "**/FuzzFile.java"))
 }
 
 tasks.test {
@@ -210,7 +210,11 @@ gradle.taskGraph.whenReady {
 }
 
 
+extra["isReleaseVersion"] = !version.toString().endsWith("SNAPSHOT")
 signing {
+    setRequired({
+        (project.extra["isReleaseVersion"] as Boolean) && gradle.taskGraph.hasTask("publish")
+    })
     sign(publishing.publications["mavenJava"])
 }
 

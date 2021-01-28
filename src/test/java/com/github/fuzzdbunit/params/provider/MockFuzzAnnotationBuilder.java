@@ -119,7 +119,7 @@ abstract class MockFuzzAnnotationBuilder<A extends Annotation, B extends MockFuz
       FuzzSources annotation = mock(FuzzSources.class);
 
       // @FuzzSource
-      when(annotation.value()).thenReturn(this.fuzzSources);
+      when(annotation.value()).thenReturn(fuzzSources);
 
       return annotation;
     }

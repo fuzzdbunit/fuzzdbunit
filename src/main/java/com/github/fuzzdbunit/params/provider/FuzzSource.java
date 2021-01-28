@@ -37,8 +37,7 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @API(status = EXPERIMENTAL, since = "5.5")
-@Repeatable(FuzzSources.class)
-@ArgumentsSource(FuzzArgumentsProvider.class)
+@ArgumentsSource(FuzzSourceArgumentsProvider.class)
 public @interface FuzzSource {
 
     /**
@@ -60,6 +59,6 @@ public @interface FuzzSource {
      * @since 5.6
      */
     @API(status = EXPERIMENTAL, since = "5.5")
-    String paddingValue();
+    String paddingValue() default "";
 
 }

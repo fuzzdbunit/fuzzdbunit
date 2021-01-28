@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import com.sun.jdi.connect.Connector;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
@@ -30,44 +31,22 @@ import org.junit.jupiter.params.support.AnnotationConsumer;
 /**
  * @since 5.0
  */
-class FuzzArgumentsProvider implements ArgumentsProvider, AnnotationConsumer<FuzzSources> {
+class FuzzSourceArgumentsProvider implements ArgumentsProvider, AnnotationConsumer<FuzzSource> {
 
-    private FuzzSources fuzzSources;
-    private List<List<String>> lineList;
+    private FuzzSource fuzzSource;
 
-    FuzzArgumentsProvider() {
+    FuzzSourceArgumentsProvider() {
+        System.out.println("FuzzSourceArgumentsProvider called");
     }
 
     @Override
-    public void accept(FuzzSources annotation) {
-        this.fuzzSources = annotation;
+    public void accept(FuzzSource annotation) {
+        this.fuzzSource = annotation;
     }
 
     @Override
     public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-        FuzzFile longerFile = Arrays.stream(fuzzSources.value()).map(FuzzSource::file)
-                .max(Comparator.comparing(FuzzFile::size)).get();
-        int maxSize = longerFile.size();
-
-        lineList = Arrays.stream(fuzzSources.value()).map(FuzzSource::file).map(FuzzFile::getData)
-                .collect(Collectors.toList());
-
-        return IntStream.range(0, maxSize).mapToObj(i -> provideObjectArray(i))
-                .map(Arguments::of);
-    }
-
-    private String[] provideObjectArray(int i) {
-        String[] stringArgs = new String[lineList.size()];
-        int j = 0;
-        for (List<String> positions : lineList) {
-            if (i < positions.size()) {
-                stringArgs[j++] = positions.get(i);
-            } else {
-                stringArgs[j] = fuzzSources.value()[j].paddingValue();
-                j++;
-            }
-        }
-        return stringArgs;
+        return fuzzSource.file().getData().stream().map(Arguments::of);
     }
 
 }
