@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.sun.jdi.connect.Connector;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
@@ -36,7 +35,7 @@ class FuzzSourceArgumentsProvider implements ArgumentsProvider, AnnotationConsum
     private FuzzSource fuzzSource;
 
     FuzzSourceArgumentsProvider() {
-        System.out.println("FuzzSourceArgumentsProvider called");
+
     }
 
     @Override
