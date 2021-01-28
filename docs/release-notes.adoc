@@ -1,5 +1,10 @@
 ## Release Notes
 
+### Version 0.3
+
+* The `@FuzzSource` annotation supports now a single file with fuzz data
+* Several `@FuzzSource` annotations can be specified within the `@FuzzSources` annotation
+
 ### Version 0.2
 
 * Deployment in Maven Central
