@@ -17,27 +17,27 @@ import static com.github.fuzzdbunit.params.provider.FuzzFile.*;
 @SpringBootTest(classes = GreetingServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GreetingServiceApplicationIntegrationTest {
 
-	@LocalServerPort
-	private int port;
+    @LocalServerPort
+    private int port;
 
-	@Autowired
-	private TestRestTemplate restTemplate;
+    @Autowired
+    private TestRestTemplate restTemplate;
 
-	@Test
-	public void testGreeting_OK() {
-		ResponseEntity<String> responseEntity = this.restTemplate
-				.getForEntity("http://localhost:" + port + "/greeting?name=Peter", String.class);
-		assertEquals(200, responseEntity.getStatusCodeValue());
-	}
+    @Test
+    public void testGreeting_OK() {
+        ResponseEntity<String> responseEntity = this.restTemplate
+                .getForEntity("http://localhost:" + port + "/greeting?name=Peter", String.class);
+        assertEquals(200, responseEntity.getStatusCodeValue());
+    }
 
-	@ParameterizedTest(name = "Fuzz testing")
-	@FuzzSource(files = {
-			SQL_INJECTION_DETECT_GENERIC_SQLI,
-			SQL_INJECTION_DETECT_GENERICBLIND },
-			paddingValues = { "", ""})
-	void testWithFuzzUnit(String firstname, String name) {
-		ResponseEntity<String> responseEntity = this.restTemplate
-				.getForEntity("http://localhost:" + port + "/greeting?name=" + name, String.class);
-		assertEquals(500, responseEntity.getStatusCodeValue());
-	}
+    @ParameterizedTest(name = "Fuzz testing")
+    @FuzzSources({
+            @FuzzSource(file = SQL_INJECTION_DETECT_GENERIC_SQLI, paddingValue = "hello"),
+            @FuzzSource(file = SQL_INJECTION_DETECT_GENERICBLIND, paddingValue = "world")
+    })
+    void testWithFuzzUnit(String firstname, String name) {
+        ResponseEntity<String> responseEntity = this.restTemplate
+                .getForEntity("http://localhost:" + port + "/greeting?name=" + name, String.class);
+        assertEquals(500, responseEntity.getStatusCodeValue());
+    }
 }

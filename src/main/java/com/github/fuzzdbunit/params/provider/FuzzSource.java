@@ -17,11 +17,8 @@ package com.github.fuzzdbunit.params.provider;
 
 import static org.apiguardian.api.API.Status.EXPERIMENTAL;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
+
 import org.apiguardian.api.API;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
@@ -40,29 +37,28 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @API(status = EXPERIMENTAL, since = "5.5")
-@ArgumentsSource(FuzzArgumentsProvider.class)
+@ArgumentsSource(FuzzSourceArgumentsProvider.class)
 public @interface FuzzSource {
 
-  /**
-   * The fuzz data files to use as the sources of arguments; must not be empty.
-   */
-  FuzzFile[] files();
+    /**
+     * The fuzz data file to be used as the sources of arguments; must not be empty.
+     */
+    FuzzFile file();
 
-  /**
-   * A list of strings that should be used to pad if the values provided by a {@code FuzzSource}
-   * doesn't have the same length as the other one.
-   *
-   * <p>For example, if you specify JSON_JSON_FUZZING (which has 89 lines) as the first source, and
-   * SQL_INJECTION_DETECT_GENERICBLIND (31 lines) as the second one, then the arguments passed as
-   * the second parameter will be the values defined in SQL_INJECTION_DETECT_GENERICBLIND up to 31,
-   * and then {@code paddingValues[1]} from the 32th line.
-   *
-   * <p>If {@code paddingValues} are left empty, or the number of padding values does not match the
-   * number of fuzz files, then the empty string {@code ""} will be used for padding.
-   *
-   * @since 5.6
-   */
-  @API(status = EXPERIMENTAL, since = "5.5")
-  String[] paddingValues() default {};
+    /**
+     * A list of padding values that should be used to pad if the values provided by another {@code FuzzSource}
+     * of the list doesn't have the same length.
+     *
+     * <p>For example, if you specify JSON_JSON_FUZZING (which has 89 lines) as the first source, and
+     * SQL_INJECTION_DETECT_GENERICBLIND (31 lines) as the second one, then the arguments passed as
+     * the second parameter will be the values defined in SQL_INJECTION_DETECT_GENERICBLIND up to 31,
+     * and then {@code padding} from the 32th line.
+     *
+     * <p>If {@code paddingValues} is left empty, then the padding value is an empty string {@code ""}.
+     *
+     * @since 5.6
+     */
+    @API(status = EXPERIMENTAL, since = "5.5")
+    String paddingValue() default "";
 
 }

@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GreetingTest {
 
     @ParameterizedTest(name = "Fuzz testing validator")
-    @FuzzSource(files = {FuzzFile.XSS_XSS_URI})
+    @FuzzSource(file = FuzzFile.XSS_XSS_URI)
     void testValidationWithFuzzUnit(String content) {
         Assertions.assertThrows(ValidationException.class, () -> {
             Greeting g = Greeting.build(10, content);

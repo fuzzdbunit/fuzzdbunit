@@ -28,13 +28,17 @@ abstract class MockFuzzAnnotationBuilder<A extends Annotation, B extends MockFuz
   private String emptyValue = "";
 
   // -------------------------------------------------------------------------
-  private String[] nullValues = new String[0];
+  private String nullValue = null;
 
   private MockFuzzAnnotationBuilder() {
   }
 
   static MockFuzzSourceBuilder fuzzSource() {
     return new MockFuzzSourceBuilder();
+  }
+
+  static MockFuzzSourcesBuilder fuzzSources() {
+    return new MockFuzzSourcesBuilder();
   }
 
   protected abstract B getSelf();
@@ -44,12 +48,13 @@ abstract class MockFuzzAnnotationBuilder<A extends Annotation, B extends MockFuz
     return getSelf();
   }
 
-  B nullValues(String... nullValues) {
-    this.nullValues = nullValues;
+  B nullValue(String nullValue) {
+    this.nullValue = nullValue;
     return getSelf();
   }
 
-  abstract A build();
+  //abstract A buildSource();
+  //abstract A buildSources();
 
   // -------------------------------------------------------------------------
 
@@ -57,8 +62,8 @@ abstract class MockFuzzAnnotationBuilder<A extends Annotation, B extends MockFuz
   static class MockFuzzSourceBuilder extends
       MockFuzzAnnotationBuilder<FuzzSource, MockFuzzSourceBuilder> {
 
-    private FuzzFile[] files = {FuzzFile.JSON_JSON_FUZZING};
-    private String[] paddingValues = null;
+    private FuzzFile file = FuzzFile.JSON_JSON_FUZZING;
+    private String paddingValue = null;
 
     @Override
     protected MockFuzzSourceBuilder getSelf() {
@@ -68,26 +73,55 @@ abstract class MockFuzzAnnotationBuilder<A extends Annotation, B extends MockFuz
     /**
      * .
      */
-    MockFuzzSourceBuilder files(FuzzFile... files) {
-      this.files = files;
+    MockFuzzSourceBuilder file(FuzzFile file) {
+      this.file = file;
       return this;
     }
 
-    MockFuzzSourceBuilder paddingValues(String... paddingValues) {
-      this.paddingValues = paddingValues;
+    MockFuzzSourceBuilder paddingValue(String paddingValue) {
+      this.paddingValue = paddingValue;
       return this;
     }
 
-    @Override
+    //@Override
     FuzzSource build() {
       FuzzSource annotation = mock(FuzzSource.class);
 
       // @FuzzSource
-      when(annotation.files()).thenReturn(this.files);
-      when(annotation.paddingValues()).thenReturn(this.paddingValues);
+      when(annotation.file()).thenReturn(this.file);
+      when(annotation.paddingValue()).thenReturn(this.paddingValue);
 
       return annotation;
     }
   }
 
+
+  static class MockFuzzSourcesBuilder extends
+          MockFuzzAnnotationBuilder<FuzzSources, MockFuzzSourcesBuilder> {
+
+    private FuzzSource[] fuzzSources = null;
+
+    @Override
+    protected MockFuzzSourcesBuilder getSelf() {
+      return this;
+    }
+
+    /**
+     * .
+     */
+    MockFuzzSourcesBuilder value(FuzzSource[] fuzzSources) {
+      this.fuzzSources = fuzzSources;
+      return this;
+    }
+
+    //@Override
+    FuzzSources build() {
+      FuzzSources annotation = mock(FuzzSources.class);
+
+      // @FuzzSource
+      when(annotation.value()).thenReturn(fuzzSources);
+
+      return annotation;
+    }
+  }
 }

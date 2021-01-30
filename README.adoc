@@ -36,13 +36,14 @@ it fits perfectly to DevSecOps.
 
 ### FuzzDB: the source of fuzzing data
 
-The fuzzing data used in FuzzUnit come from https://github.com/fuzzdb-project/fuzzdb[FuzzDB], "the
+The fuzzing data used in FuzzDbUnit come from https://github.com/fuzzdb-project/fuzzdb[FuzzDB], "the
 first and most comprehensive open dictionary of fault injection patterns, predictable resource
 locations, and regex for matching server responses. FuzzDB was created to increase the likelihood of
 finding application security vulnerabilities through dynamic application security testing." 
 
-FuzzDbUnit allows developers to carry on fuzz testing during the unit or integration phase, when bugs
-are easier to fix. Because
+FuzzDb provides developers with the expertise of a real ethical hacker through his proven attack patterns.
+With FuzzDbUnit, these patterns are useful not only during dynamic application security testing, but also
+in unit and integration testing.
 
 
 ### Links
