@@ -20,7 +20,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 public class SourceTest {
 
     @ParameterizedTest
-    @FuzzSource(file = FuzzFile.JSON_JSON_FUZZING)
+    @FuzzSource(file = FuzzFile.ATTACK_JSON_JSON_FUZZING)
     public void valueTestSingleParameter(String s1) {
         System.out.println(s1);
 
@@ -29,8 +29,8 @@ public class SourceTest {
 
     @ParameterizedTest
     @FuzzSources({
-            @FuzzSource(file = FuzzFile.JSON_JSON_FUZZING),
-            @FuzzSource(file = FuzzFile.HTTP_PROTOCOL_CRLF_INJECTION, paddingValue = "pad")
+            @FuzzSource(file = FuzzFile.ATTACK_JSON_JSON_FUZZING),
+            @FuzzSource(file = FuzzFile.ATTACK_HTTP_PROTOCOL_CRLF_INJECTION, paddingValue = "pad")
     })
     public void valueTestDoubleParameter(String s1, String s2) {
         System.out.println(s1 + "-" + s2);

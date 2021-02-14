@@ -62,7 +62,7 @@ abstract class MockFuzzAnnotationBuilder<A extends Annotation, B extends MockFuz
   static class MockFuzzSourceBuilder extends
       MockFuzzAnnotationBuilder<FuzzSource, MockFuzzSourceBuilder> {
 
-    private FuzzFile file = FuzzFile.JSON_JSON_FUZZING;
+    private FuzzFile file = FuzzFile.ATTACK_JSON_JSON_FUZZING;
     private String paddingValue = null;
 
     @Override

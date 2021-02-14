@@ -44,7 +44,7 @@ class FuzzSourceArgumentsProviderTest {
 
     @Test
     void providesArgumentsSingleFile() {
-        FuzzSource annotation = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).build();
+        FuzzSource annotation = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_JSON_JSON_FUZZING).build();
 
         Stream<Object[]> arguments = provideArguments(new FuzzSourceArgumentsProvider(), annotation);
 
@@ -53,7 +53,7 @@ class FuzzSourceArgumentsProviderTest {
 
     @Test
     void providesArgumentsOneFileWithPaddingNull() {
-        FuzzSource annotation = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).paddingValue(null).build();
+        FuzzSource annotation = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_JSON_JSON_FUZZING).paddingValue(null).build();
 
         Stream<Object[]> arguments = provideArguments(new FuzzSourceArgumentsProvider(), annotation);
 

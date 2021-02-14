@@ -77,24 +77,28 @@ val cloneOrUpdateFuzzDb by tasks.registering {
 
 val GENERATED_RESOURCE_FOLDER = "$buildDir/generated/resources"
 val RESOURCE_ATTACK_FOLDER = "$GENERATED_RESOURCE_FOLDER/attack"
+val RESOURCE_USERPWD_FOLDER = "$GENERATED_RESOURCE_FOLDER/userpwd"
 val GENERATED_JAVA_FOLDER = "$buildDir/generated/java"
 val FUZZDB_DOCS_FOLDER = "$projectDir/docs/fuzzDb/"
 
 val copyFuzzDbFiles by tasks.registering {
     dependsOn(cloneOrUpdateFuzzDb)
-    println("Copy to $RESOURCE_ATTACK_FOLDER")
 
     doLast {
         copy {
             from(fileTree("$buildDir/fuzzDb/attack"))
             into("$RESOURCE_ATTACK_FOLDER")
         }
+        copy {
+            from(fileTree("$buildDir/fuzzDb/wordlists-user-passwd"))
+            into("$RESOURCE_USERPWD_FOLDER")
+        }
     }
 }
 
 val copyFuzzDbDocs by tasks.registering {
     dependsOn(cloneOrUpdateFuzzDb)
-    println("Copy to $RESOURCE_ATTACK_FOLDER")
+    println("Copy to $GENERATED_RESOURCE_FOLDER")
 
     doLast {
         copy {
@@ -114,7 +118,7 @@ val generateFuzzEnum by tasks.registering {
 
     doLast {
         val generator = FuzzDbEnumGenerator()
-        generator.generateEnum("$RESOURCE_ATTACK_FOLDER")
+        generator.generateEnum("$GENERATED_RESOURCE_FOLDER")
     }
 }
 
@@ -238,6 +242,7 @@ class FuzzDbEnumGenerator {
                 .filter { it.isFile }
                 .filter { it.canonicalPath.contains(".txt") }
                 .filter { !it.canonicalPath.contains(".doc.txt") }
+                .filter { !it.canonicalPath.contains("readme") }
                 .map { buildEnumName(it) }
                 .toMap()
         val state = State()
@@ -276,7 +281,7 @@ class FuzzDbEnumGenerator {
                 .substringAfter("resources" + File.separatorChar)
                 .replace("\\", "/")
         val enumName = relativePath
-                .substringAfter("attack/")
+                //.substringAfter("attack/")
                 .substringBefore(".txt")
                 .replace("-", "_")
                 .replace("/", "_")

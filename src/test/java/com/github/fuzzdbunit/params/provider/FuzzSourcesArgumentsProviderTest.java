@@ -35,14 +35,6 @@ import static org.mockito.Mockito.*;
 
 class FuzzSourcesArgumentsProviderTest {
 
-    static Stream<String> fuzzFileStream() throws IOException {
-        System.out.println(Paths.get("build/fuzzDb/attack"));
-        return Files.walk(Paths.get("build/fuzzDb/attack"))
-                .filter(f -> f.toString().endsWith(".txt"))
-                .filter(f -> !f.toString().endsWith(".doc.txt"))
-                .map(p -> extractEnumName(p));
-    }
-
     static String extractEnumName(Path p) {
         String filename = p.toString();
         int beginPos = filename.indexOf("attack" + File.separator) + 7;
@@ -61,7 +53,7 @@ class FuzzSourcesArgumentsProviderTest {
 
     @Test
     void providesArgumentsSingleFile() {
-        FuzzSource fuzzSource = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).build();
+        FuzzSource fuzzSource = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_JSON_JSON_FUZZING).build();
         FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource).toArray(new FuzzSource[1]);
         FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
@@ -72,8 +64,8 @@ class FuzzSourcesArgumentsProviderTest {
 
     @Test
     void providesArgumentsFileTwice() {
-        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).build();
-        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).build();
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_JSON_JSON_FUZZING).build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_JSON_JSON_FUZZING).build();
         FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource1, fuzzSource2).toArray(new FuzzSource[2]);
         FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
@@ -85,8 +77,8 @@ class FuzzSourcesArgumentsProviderTest {
 
     @Test
     void providesArgumentsTwoFilesLongerFirst() {
-        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).build();
-        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES).build();
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_JSON_JSON_FUZZING).build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_BUSINESS_LOGIC_COMMONMETHODNAMES).build();
         FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource1, fuzzSource2).toArray(new FuzzSource[2]);
         FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
@@ -99,8 +91,8 @@ class FuzzSourcesArgumentsProviderTest {
 
     @Test
     void providesArgumentsTwoFilesShorterFirst() {
-        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES).build();
-        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).build();
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_BUSINESS_LOGIC_COMMONMETHODNAMES).build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_JSON_JSON_FUZZING).build();
         FuzzSource[] fuzzSources = Arrays.asList(fuzzSource1, fuzzSource2).toArray(new FuzzSource[2]);
         FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
@@ -113,8 +105,8 @@ class FuzzSourcesArgumentsProviderTest {
 
     @Test
     void providesArgumentsTwoFilesWithPaddingNull() {
-        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).paddingValue(null).build();
-        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES).paddingValue(null).build();
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_JSON_JSON_FUZZING).paddingValue(null).build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_BUSINESS_LOGIC_COMMONMETHODNAMES).paddingValue(null).build();
         FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource1, fuzzSource2).toArray(new FuzzSource[2]);
         FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
@@ -127,8 +119,8 @@ class FuzzSourcesArgumentsProviderTest {
 
     @Test
     void providesArgumentsTwoFilesWithPaddingEmpty() {
-        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).paddingValue("").build();
-        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES).paddingValue("").build();
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_JSON_JSON_FUZZING).paddingValue("").build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_BUSINESS_LOGIC_COMMONMETHODNAMES).paddingValue("").build();
         FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource1, fuzzSource2).toArray(new FuzzSource[2]);
         FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
@@ -141,10 +133,10 @@ class FuzzSourcesArgumentsProviderTest {
 
     @Test
     void providesArgumentsFourFilesWithPadding() {
-        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.BUSINESS_LOGIC_COMMONMETHODNAMES).paddingValue("").build();
-        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).paddingValue("").build();
-        FuzzSource fuzzSource3 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.HTTP_PROTOCOL_CRLF_INJECTION).paddingValue("").build();
-        FuzzSource fuzzSource4 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.XSS_XSS_OTHER).paddingValue("").build();
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_BUSINESS_LOGIC_COMMONMETHODNAMES).paddingValue("").build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_JSON_JSON_FUZZING).paddingValue("").build();
+        FuzzSource fuzzSource3 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_HTTP_PROTOCOL_CRLF_INJECTION).paddingValue("").build();
+        FuzzSource fuzzSource4 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_XSS_XSS_OTHER).paddingValue("").build();
         FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource1, fuzzSource2, fuzzSource3, fuzzSource4).toArray(new FuzzSource[2]);
         FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
@@ -157,8 +149,8 @@ class FuzzSourcesArgumentsProviderTest {
 
     @Test
     void providesArgumentsWithNormalFileWithPadding() {
-        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.JSON_JSON_FUZZING).paddingValue(null).build();
-        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.BUSINESS_LOGIC_COMMONDEBUGPARAMNAMES).paddingValue(null).build();
+        FuzzSource fuzzSource1 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_JSON_JSON_FUZZING).paddingValue(null).build();
+        FuzzSource fuzzSource2 = MockFuzzAnnotationBuilder.fuzzSource().file(FuzzFile.ATTACK_BUSINESS_LOGIC_COMMONDEBUGPARAMNAMES).paddingValue(null).build();
         FuzzSource[] fuzzSources = (FuzzSource[]) Arrays.asList(fuzzSource1, fuzzSource2).toArray(new FuzzSource[2]);
         FuzzSources annotation = MockFuzzAnnotationBuilder.fuzzSources().value(fuzzSources).build();
 
@@ -168,22 +160,6 @@ class FuzzSourcesArgumentsProviderTest {
                 .contains(array("foo1", "7357=1"), array("foo2", "7357=true"),
                         array("foo3", "7357=y"), array(null, "7357=yes"));
     }
-
-    @ParameterizedTest
-    @MethodSource("fuzzFileStream")
-    void testFuzzFiles(String fuzzEnumName) {
-        FuzzFile ff = FuzzFile.valueOf(fuzzEnumName);
-        System.out.println(ff.getFilePath());
-        assertThat(ff).isNotNull();
-        assertThat(ff.getData().size()).isNotEqualTo(0);
-    }
-
-//    private Stream<Object[]> provideArguments(FuzzFile file, FuzzSource annotation) {
-//        FuzzFile expectedFile = annotation.file();
-//
-//        FuzzArgumentsProvider provider = new FuzzArgumentsProvider();
-//        return provideArguments(provider, annotation);
-//    }
 
     private Stream<Object[]> provideArguments(FuzzSourcesArgumentsProvider provider,
                                               FuzzSources annotation) {

@@ -35,16 +35,18 @@ import static org.mockito.Mockito.*;
 class FuzzFilesTest {
 
     static Stream<String> fuzzFileStream() throws IOException {
-        System.out.println(Paths.get("build/fuzzDb/attack"));
-        return Files.walk(Paths.get("build/fuzzDb/attack"))
+        System.out.println(Paths.get("build/generated/resources"));
+        return Files.walk(Paths.get("build/generated/resources"))
+                .filter(f -> f.toString().matches(".*/(attack|userpwd)/.*"))
                 .filter(f -> f.toString().endsWith(".txt"))
                 .filter(f -> !f.toString().endsWith(".doc.txt"))
+                .filter(f -> !f.toString().contains("readme"))
                 .map(p -> extractEnumName(p));
     }
 
     static String extractEnumName(Path p) {
         String filename = p.toString();
-        int beginPos = filename.indexOf("attack" + File.separator) + 7;
+        int beginPos = filename.indexOf("resources" + File.separator) + 10;
         int endPos = filename.length() - 4;
         return filename.substring(beginPos, endPos)
                 .replace(File.separator, "_")
