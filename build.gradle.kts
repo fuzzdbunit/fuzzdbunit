@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.fuzzdbunit"
-version = "0.3"
+version = "0.4"
 
 repositories {
     mavenCentral()
